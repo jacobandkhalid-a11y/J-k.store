@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>J&amp;K Admin</title>
+<style>
+:root { --paper:#f6f4ee; --ink:#151513; --leaf:#55603f; --mist:#dde2d0; --line:rgba(21,21,19,.15); --muted:rgba(21,21,19,.62); color-scheme: light; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; padding:env(safe-area-inset-top,0) 0 calc(5rem + env(safe-area-inset-bottom,0)); }
+button,input,select,textarea { font:inherit; color:inherit; }
+button { cursor:pointer; }
+.wrap { max-width:44rem; margin:0 auto; padding:0 16px; }
+h1 { font-size:1.4rem; margin:0; letter-spacing:-.02em; }
+.btn { border:1px solid var(--line); background:transparent; border-radius:999px; padding:.5rem 1rem; font-weight:600; font-size:.9rem; }
+.btn.solid { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.btn.danger { color:#a3261f; border-color:#e3b9b6; }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+input,select,textarea { width:100%; background:#fff; border:1px solid var(--line); border-radius:.7rem; padding:.6rem .75rem; font-size:16px; }
+textarea { resize:vertical; min-height:4rem; }
+label { display:block; font-size:.8rem; color:var(--muted); margin-top:.8rem; }
+.top { display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:1rem 0; }
+.tabs { display:flex; gap:.5rem; margin-bottom:.8rem; }
+.tabs .btn[aria-pressed="true"] { background:var(--ink); color:var(--paper); }
+.chips { display:flex; gap:.4rem; overflow-x:auto; padding-bottom:.6rem; }
+.chips .btn { white-space:nowrap; padding:.35rem .8rem; font-size:.82rem; }
+.chips .btn[aria-pressed="true"] { background:var(--leaf); color:#fff; border-color:var(--leaf); }
+.card { display:grid; grid-template-columns:4.5rem minmax(0,1fr); gap:.8rem; background:#fff; border:1px solid var(--line); border-radius:1rem; padding:.75rem; margin-bottom:.7rem; }
+.thumb { width:4.5rem; height:5.6rem; border-radius:.7rem; background:var(--mist); object-fit:cover; display:grid; place-items:center; font-size:.65rem; color:var(--muted); text-align:center; overflow:hidden; }
+.thumb img { width:100%; height:100%; object-fit:cover; }
+.card h3 { margin:0; font-size:1rem; overflow-wrap:anywhere; }
+.sub { color:var(--muted); font-size:.82rem; }
+.row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin-top:.5rem; }
+.row select { width:auto; padding:.35rem .6rem; font-size:.9rem; }
+.pill { display:inline-block; font-size:.72rem; font-weight:600; padding:.1rem .55rem; border-radius:999px; background:var(--mist); }
+.savebar { position:fixed; left:0; right:0; bottom:0; padding:.7rem 16px calc(.7rem + env(safe-area-inset-bottom,0)); background:var(--ink); color:var(--paper); display:flex; justify-content:space-between; align-items:center; gap:1rem; z-index:5; }
+.savebar .btn { background:var(--paper); color:var(--ink); }
+.sheet-bg { position:fixed; inset:0; background:rgba(21,21,19,.5); z-index:10; }
+.sheet { position:fixed; left:0; right:0; bottom:0; top:2rem; max-width:44rem; margin:0 auto; background:var(--paper); border-radius:1.2rem 1.2rem 0 0; z-index:11; overflow-y:auto; padding:1rem 16px calc(1.5rem + env(safe-area-inset-bottom,0)); }
+.photos { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin-top:.4rem; }
+.slot { border:1.5px dashed var(--line); border-radius:.8rem; padding:.4rem; text-align:center; background:#fff; }
+.slot .thumb { width:100%; height:6rem; margin-bottom:.4rem; }
+.slot .btn { width:100%; padding:.3rem; font-size:.78rem; margin-top:.25rem; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.hint { font-size:.78rem; color:var(--muted); margin:.3rem 0 0; }
+.order { background:#fff; border:1px solid var(--line); border-radius:1rem; padding:.85rem; margin-bottom:.7rem; }
+.order pre { white-space:pre-wrap; font:inherit; margin:.4rem 0; font-size:.9rem; }
+.order a { color:var(--leaf); font-weight:600; }
+.toast { position:fixed; left:50%; top:calc(.8rem + env(safe-area-inset-top,0)); transform:translate(-50%,-20px); background:var(--ink); color:var(--paper); padding:.6rem 1.1rem; border-radius:999px; font-size:.9rem; opacity:0; pointer-events:none; transition:.25s; z-index:30; max-width:90vw; text-align:center; }
+.toast.on { opacity:1; transform:translate(-50%,0); }
+.login { max-width:22rem; margin:18vh auto 0; }
+.err { color:#a3261f; font-size:.88rem; min-height:1.2em; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<div class="wrap" id="loginView">
+  <div class="login">
+    <h1>J&amp;K Admin</h1>
+    <p class="sub">Log in to manage your products and orders.</p>
+    <div id="urlWrap"><label for="apiUrl">Your Google web app link</label><input id="apiUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off"></div>
+    <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
+    <p class="err" id="loginErr" role="alert"></p>
+    <button class="btn solid" id="loginBtn" style="width:100%;padding:.75rem">Log in</button>
+  </div>
+</div>
+
+<div class="wrap" id="appView" hidden>
+  <div class="top"><h1>J&amp;K Admin</h1><div><button class="btn" id="reload">Refresh</button> <button class="btn" id="logout">Log out</button></div></div>
+  <div class="tabs"><button class="btn" id="tabP" aria-pressed="true">Products</button><button class="btn" id="tabO" aria-pressed="false">Orders</button></div>
+
+  <div id="productsView">
+    <div class="chips" id="chips"></div>
+    <div id="plist"></div>
+    <button class="btn solid" id="addBtn" style="width:100%;padding:.7rem">+ Add product</button>
+  </div>
+  <div id="ordersView" hidden>
+    <div class="chips" id="ochips"></div>
+    <div id="olist"></div>
+  </div>
+</div>
+
+<div class="savebar" id="savebar" hidden><span id="saveMsg">Unsaved changes</span><button class="btn" id="saveBtn">Save changes</button></div>
+<div class="sheet-bg" id="bg" hidden></div>
+<div class="sheet" id="sheet" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  var CATS = ['T-shirt', 'Pants', 'Shoes', 'Socks', 'Winter'];
+  var STATUSES = ['New', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
+  var AV = [['Yes', 'Available'], ['No', 'Sold out'], ['Hide', 'Hidden']];
+  var $ = function (id) { return document.getElementById(id); };
+  var api = window.JK_API || '', pass = '', products = [], orders = [], dirty = false, cat = 'All', ostat = 'All', editing = null, uid = 0;
+  try { if (!api) api = localStorage.getItem('jk-api') || ''; } catch (e) {}
+  try { pass = sessionStorage.getItem('jk-pass') || ''; } catch (e) {}
+  if (window.JK_API) $('urlWrap').hidden = true; else $('apiUrl').value = api;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var tt;
+  function toast(m) { var t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('on'); }, 2400); }
+  function photoUrl(u) {
+    u = String(u || '').trim(); if (!u) return '';
+    if (u.indexOf('drive.google.com') > -1) { var m = u.match(/\/d\/([-\w]+)/) || u.match(/[?&]id=([-\w]+)/); if (m) return 'https://lh3.googleusercontent.com/d/' + m[1]; }
+    return u;
+  }
+  function call(payload) {
+    payload.password = pass;
+    return fetch(api, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); });
+  }
+  function setDirty(v) { dirty = v; $('savebar').hidden = !v; }
+  window.addEventListener('beforeunload', function (e) { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  // ---------- login ----------
+  function login(auto) {
+    if (!window.JK_API) api = $('apiUrl').value.trim();
+    var p = auto ? pass : $('pw').value;
+    if (!api) { $('loginErr').textContent = 'Paste your Google web app link.'; return; }
+    if (!p) { if (!auto) $('loginErr').textContent = 'Enter your password.'; return; }
+    pass = p; $('loginErr').textContent = ''; $('loginBtn').disabled = true; $('loginBtn').textContent = 'Checking...';
+    call({ action: 'list' }).then(function (r) {
+      $('loginBtn').disabled = false; $('loginBtn').textContent = 'Log in';
+      if (!r.ok) { pass = ''; $('loginErr').textContent = r.error === 'Wrong password' ? 'Wrong password. Check it matches the one in your Google script.' : (r.error || 'Could not log in.'); return; }
+      try { localStorage.setItem('jk-api', api); sessionStorage.setItem('jk-pass', pass); } catch (e) {}
+      load(r);
+      $('loginView').hidden = true; $('appView').hidden = false;
+    }).catch(function () {
+      $('loginBtn').disabled = false; $('loginBtn').textContent = 'Log in';
+      pass = ''; $('loginErr').textContent = 'Could not reach your Google script. Check the link and that it is deployed for "Anyone".';
+    });
+  }
+  function load(r) {
+    products = (r.products || []).map(function (p) { p._id = ++uid; return p; });
+    orders = r.orders || [];
+    setDirty(false); renderChips(); renderProducts(); renderOrders();
+  }
+  $('loginBtn').addEventListener('click', function () { login(false); });
+  $('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') login(false); });
+  $('logout').addEventListener('click', function () { try { sessionStorage.removeItem('jk-pass'); } catch (e) {} location.reload(); });
+  $('reload').addEventListener('click', function () {
+    if (dirty && !confirm('You have unsaved changes. Refresh anyway?')) return;
+    call({ action: 'list' }).then(function (r) { if (r.ok) { load(r); toast('Refreshed'); } else toast(r.error || 'Failed'); }).catch(function () { toast('No connection'); });
+  });
+
+  // ---------- tabs ----------
+  function tab(p) {
+    $('tabP').setAttribute('aria-pressed', String(p)); $('tabO').setAttribute('aria-pressed', String(!p));
+    $('productsView').hidden = !p; $('ordersView').hidden = p;
+    $('savebar').hidden = p ? !dirty : true;
+  }
+  $('tabP').addEventListener('click', function () { tab(true); });
+  $('tabO').addEventListener('click', function () { tab(false); });
+
+  // ---------- products ----------
+  function renderChips() {
+    $('chips').innerHTML = ['All'].concat(CATS).map(function (c) { return '<button class="btn" data-c="' + esc(c) + '" aria-pressed="' + (c === cat) + '">' + esc(c) + '</button>'; }).join('');
+    $('ochips').innerHTML = ['All'].concat(STATUSES).map(function (c) { return '<button class="btn" data-s="' + esc(c) + '" aria-pressed="' + (c === ostat) + '">' + esc(c) + '</button>'; }).join('');
+  }
+  $('chips').addEventListener('click', function (e) { var b = e.target.closest('[data-c]'); if (!b) return; cat = b.dataset.c; renderChips(); renderProducts(); });
+  $('ochips').addEventListener('click', function (e) { var b = e.target.closest('[data-s]'); if (!b) return; ostat = b.dataset.s; renderChips(); renderOrders(); });
+
+  function renderProducts() {
+    var list = products.filter(function (p) { return cat === 'All' || p.category === cat; });
+    $('plist').innerHTML = list.length ? list.map(function (p) {
+      var img = photoUrl(p.photo1);
+      return '<div class="card" data-id="' + p._id + '"><div class="thumb">' + (img ? '<img src="' + esc(img) + '" alt="">' : 'No photo') + '</div><div>' +
+        '<h3>' + esc(p.name) + '</h3><div class="sub">' + esc(p.category) + ' · ' + esc(p.price) + '</div>' +
+        '<div class="row"><select data-av aria-label="Availability">' + AV.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === (p.available || 'Yes') ? ' selected' : '') + '>' + a[1] + '</option>'; }).join('') + '</select>' +
+        '<button class="btn" data-edit>Edit</button></div></div></div>';
+    }).join('') : '<p class="sub">No products here yet. Tap "Add product".</p>';
+  }
+  function byId(id) { for (var i = 0; i < products.length; i++) if (products[i]._id == id) return products[i]; return null; }
+  $('plist').addEventListener('click', function (e) { var c = e.target.closest('.card'); if (c && e.target.closest('[data-edit]')) openEdit(byId(c.dataset.id)); });
+  $('plist').addEventListener('change', function (e) {
+    var c = e.target.closest('.card'); if (!c || !e.target.matches('[data-av]')) return;
+    byId(c.dataset.id).available = e.target.value; setDirty(true);
+  });
+  $('addBtn').addEventListener('click', function () {
+    var p = { _id: ++uid, category: cat === 'All' ? CATS[0] : cat, name: '', price: '', available: 'Yes', photo1: '', photo2: '', photo3: '', sizes: '', colors: '', details: '', description: '', _new: true };
+    products.push(p); openEdit(p);
+  });
+
+  // ---------- edit sheet ----------
+  function openEdit(p) {
+    editing = p;
+    var photos = [1, 2, 3].map(function (n) {
+      var u = photoUrl(p['photo' + n]);
+      return '<div class="slot" data-n="' + n + '"><div class="thumb">' + (u ? '<img src="' + esc(u) + '" alt="">' : 'Empty') + '</div>' +
+        '<button class="btn" data-up>Upload</button>' + (u ? '<button class="btn danger" data-rm>Remove</button>' : '') + '</div>';
+    }).join('');
+    $('sheet').innerHTML = '<div class="top"><h1>' + (p._new ? 'New product' : 'Edit product') + '</h1><button class="btn solid" id="doneBtn">Done</button></div>' +
+      '<label>Category</label><select data-f="category">' + CATS.map(function (c) { return '<option' + (c === p.category ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select>' +
+      '<label>Name</label><input data-f="name" value="' + esc(p.name) + '">' +
+      '<div class="two"><div><label>Price</label><input data-f="price" inputmode="numeric" value="' + esc(p.price) + '"></div>' +
+      '<div><label>Availability</label><select data-f="available">' + AV.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === (p.available || 'Yes') ? ' selected' : '') + '>' + a[1] + '</option>'; }).join('') + '</select></div></div>' +
+      '<label>Photos (tap Upload, pick from your gallery)</label><div class="photos">' + photos + '</div><input type="file" id="file" accept="image/*" hidden>' +
+      '<label>Sizes (separate with commas, leave empty for the category default)</label><input data-f="sizes" placeholder="S, M, L, XL" value="' + esc(p.sizes) + '">' +
+      '<label>Colors (separate with commas)</label><input data-f="colors" placeholder="Black, Olive" value="' + esc(p.colors) + '">' +
+      '<label>Short details</label><input data-f="details" value="' + esc(p.details) + '">' +
+      '<label>Full description (optional)</label><textarea data-f="description">' + esc(p.description) + '</textarea>' +
+      '<div class="row" style="margin-top:1.2rem"><button class="btn danger" id="delBtn">Delete product</button></div>';
+    $('bg').hidden = false; $('sheet').hidden = false; $('sheet').scrollTop = 0;
+  }
+  function closeEdit() {
+    if (editing && editing._new && !String(editing.name).trim()) products = products.filter(function (p) { return p !== editing; });
+    if (editing) delete editing._new;
+    editing = null; $('bg').hidden = true; $('sheet').hidden = true; renderProducts();
+  }
+  $('bg').addEventListener('click', closeEdit);
+  $('sheet').addEventListener('input', function (e) {
+    var f = e.target.getAttribute('data-f'); if (!f || !editing) return;
+    editing[f] = e.target.value; setDirty(true);
+  });
+  var slotN = 0;
+  $('sheet').addEventListener('click', function (e) {
+    if (e.target.id === 'doneBtn') { closeEdit(); return; }
+    if (e.target.id === 'delBtn') {
+      if (!confirm('Delete "' + (editing.name || 'this product') + '"?')) return;
+      products = products.filter(function (p) { return p !== editing; }); editing = null; setDirty(true); closeEdit(); return;
+    }
+    var slot = e.target.closest('.slot'); if (!slot) return;
+    slotN = Number(slot.dataset.n);
+    if (e.target.matches('[data-up]')) $('file').click();
+    if (e.target.matches('[data-rm]')) { editing['photo' + slotN] = ''; setDirty(true); openEdit(editing); }
+  });
+  $('sheet').addEventListener('change', function (e) {
+    if (e.target.id !== 'file') return;
+    var f = e.target.files[0]; e.target.value = ''; if (!f || !editing) return;
+    var target = editing, n = slotN;
+    toast('Uploading photo...');
+    resize(f, 1000, function (b64) {
+      if (!b64) { toast('Could not read that image'); return; }
+      call({ action: 'upload', data: b64, name: (target.name || 'photo') }).then(function (r) {
+        if (!r.ok) { toast(r.error || 'Upload failed'); return; }
+        target['photo' + n] = r.url; setDirty(true); toast('Photo added. Remember to Save changes.');
+        if (editing === target) openEdit(target);
+      }).catch(function () { toast('Upload failed. Check your connection.'); });
+    });
+  });
+  function resize(file, max, cb) {
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var s = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      cb(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    };
+    img.onerror = function () { cb(''); };
+    img.src = url;
+  }
+
+  // ---------- save ----------
+  $('saveBtn').addEventListener('click', function () {
+    var bad = products.filter(function (p) { return !String(p.name).trim(); });
+    if (bad.length) { toast('Every product needs a name'); return; }
+    var out = products.map(function (p) { var o = {}; ['category', 'name', 'price', 'available', 'photo1', 'photo2', 'photo3', 'sizes', 'colors', 'details', 'description'].forEach(function (k) { o[k] = p[k]; }); return o; });
+    $('saveBtn').disabled = true; $('saveBtn').textContent = 'Saving...';
+    call({ action: 'saveProducts', products: out }).then(function (r) {
+      $('saveBtn').disabled = false; $('saveBtn').textContent = 'Save changes';
+      if (!r.ok) { toast(r.error || 'Save failed'); return; }
+      setDirty(false); toast('Saved. Your shop shows the changes within a minute.');
+    }).catch(function () { $('saveBtn').disabled = false; $('saveBtn').textContent = 'Save changes'; toast('Save failed. Check your connection.'); });
+  });
+
+  // ---------- orders ----------
+  function renderOrders() {
+    var list = orders.filter(function (o) { return ostat === 'All' || o.status === ostat; });
+    $('olist').innerHTML = list.length ? list.map(function (o) {
+      var d = new Date(o.time), when = isNaN(d) ? '' : d.toLocaleString();
+      var ph = String(o.phone || '').replace(/[^\d+]/g, '');
+      return '<div class="order" data-row="' + o.row + '" data-id="' + esc(o.id) + '"><div class="row" style="margin:0;justify-content:space-between"><strong>' + esc(o.id) + '</strong><span class="sub">' + esc(when) + '</span></div>' +
+        '<div><strong>' + esc(o.name) + '</strong> · <a href="tel:' + esc(ph) + '">' + esc(o.phone) + '</a></div><div class="sub">' + esc(o.address) + '</div>' +
+        '<pre>' + esc(o.items) + '</pre><div class="sub">Total ' + esc(o.total) + ' · ' + esc(o.payment) + (o.trx ? ' · ID ' + esc(o.trx) : '') + '</div>' +
+        '<div class="row"><select data-st aria-label="Order status">' + STATUSES.map(function (s) { return '<option' + (s === o.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></div></div>';
+    }).join('') : '<p class="sub">No orders here yet.</p>';
+  }
+  $('olist').addEventListener('change', function (e) {
+    var c = e.target.closest('.order'); if (!c || !e.target.matches('[data-st]')) return;
+    var st = e.target.value;
+    call({ action: 'setStatus', row: c.dataset.row, id: c.dataset.id, status: st }).then(function (r) {
+      if (!r.ok) { toast(r.error || 'Failed'); return; }
+      orders.forEach(function (o) { if (String(o.row) === c.dataset.row) o.status = st; });
+      toast('Marked ' + st);
+    }).catch(function () { toast('No connection'); });
+  });
+
+  if (pass && (api || window.JK_API)) login(true);
+})();
+</script>
+</body>
+</html>
